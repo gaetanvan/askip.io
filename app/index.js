@@ -1,88 +1,61 @@
 import React, {useEffect, useState} from 'react';
-import MapView, {Marker} from 'react-native-maps';
-import { StyleSheet, View, Text } from 'react-native';
-import { url } from '../components/url';
+import {StyleSheet, View, Text, Button, TextInput} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import {Link} from "expo-router";
+
 
 export default function App() {
 
-    const [markers, setMarkers] = useState([]);
-    const [region, setRegion] = useState({
-        latitude: 45.188477100449155,
-        longitude: 5.7136845,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-    });
-    const maxoffset = 1044 / 100;
-    let offset = 100;
-
-    const fetchData = async () => {
-        const newMarkers = [];
-        for (let e = 1; e < maxoffset; e++) {
-            try {
-                const response = await fetch(url + '&offset=' + offset);
-                const data = await response.json();
-                const locations = data['results'];
-
-                for (let i = 0; i < locations.length; i++) {
-                    const location = locations[i];
-                    const marker = {
-                        latlng: {
-                            latitude: location["geo_point_2d"].lat,
-                            longitude: location["geo_point_2d"].lon
-                        },
-                        title: location.commune + ', ' + location.code_commune + ', ' + location.name,
-                        id: offset + i
-                    };
-
-                    const tolerance = 0.003;
-
-                    if (
-                        marker.latlng.latitude >= region.latitude - tolerance &&
-                        marker.latlng.latitude <= region.latitude + tolerance &&
-                        marker.latlng.longitude >= region.longitude - tolerance &&
-                        marker.latlng.longitude <= region.longitude + tolerance
-                    ) {
-                        newMarkers.push(marker);
-                    }
-                }
-                offset += 100;
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        setMarkers(newMarkers);
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [region]);
-
-
     return (
-        <View style={styles.map}>
-            <MapView
-                style={{ flex: 1 }}
-                region={region}
-                onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
-            >
-                {markers.map(marker => (
-                    <Marker key={marker.id}
-                            coordinate={{
-                                latitude: parseFloat(marker.latlng.latitude),
-                                longitude: parseFloat(marker.latlng.longitude),}}
-                            title={marker.title}/>
-                ))}
-            </MapView>
+        <View style={styles.navBar}>
+            <View style={styles.leftIcon}>
+                <Ionicons name="notifications-outline" size={24} color="black" />
+            </View>
+            <View style={styles.searchBar}>
+                <TextInput
+                    placeholder="Recherche"
+                    style={styles.input}
+                    onChangeText={(text) => {
+                        // Gérez la recherche ici
+                    }}
+                />
+            </View>
+            <View style={styles.rightIcon}>
+                <FontAwesome name="user-o" size={24} color="black" />
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    navBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        paddingHorizontal: 10,
+        height: 60,
+        borderBottomWidth: 1,
+        borderBottomColor: 'lightgray',
     },
-    map: {
+    leftIcon: {
+        flex: 1,
+        alignItems: 'flex-start',
+    },
+    searchBar: {
+        flex: 3,
+        alignItems: 'center',
+    },
+    input: {
         width: '100%',
-        height: '100%',
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 20,
+        paddingLeft: 10,
+    },
+    rightIcon: {
+        flex: 1,
+        alignItems: 'flex-end',
     },
 });
