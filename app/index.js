@@ -1,15 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Button, TextInput} from 'react-native';
+import {StyleSheet, View, Text, Button, TextInput, ScrollView} from 'react-native';
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {Link} from "expo-router";
 import {PaperProvider} from "react-native-paper";
 import {getUserInfoFromToken} from "../components/AuthUtils";
 import { AntDesign } from '@expo/vector-icons';
-
+import { eachDayOfInterval, format , isToday} from 'date-fns';
+import frLocale from 'date-fns/locale/fr';
+import {useFonts} from "expo-font";
 
 export default function App() {
     const [user, setUser] = useState(null);
+
+    const currentDate = new Date();
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const dates = eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
+
+    const [fontsLoaded] = useFonts({
+        'Blinker-Regular': require('../assets/fonts/Blinker-Regular.ttf'),
+        'MontserratAlternates-Bold': require('../assets/fonts/MontserratAlternates-Bold.ttf'),
+        'MontserratAlternates-Regular': require('../assets/fonts/MontserratAlternates-Regular.ttf'),
+    });
 
     useEffect(() => {
         async function fetchUserInfo() {
@@ -40,8 +53,8 @@ export default function App() {
                     <View style={styles.rightIcon}>
                         {user ? (
                             <View>
-                                <Link href="/">
-                                    <FontAwesome name="user-o" size={24} color="black" />
+                                <Link href="/register">
+                                    <FontAwesome name="user-o" size={24} color="black"/>
                                 </Link>
                             </View>
                         ) : (
@@ -50,6 +63,27 @@ export default function App() {
                             </Link>
                         )}
                     </View>
+                </View>
+                <View style={styles.calendarContainer}>
+                    <ScrollView horizontal={true} style={styles.calendar}>
+                        {dates.map((date, index) => (
+                            <View
+                                key={index}
+                                style={[styles.date]}
+                            >
+                                <Text style={isToday(date) ? styles.todayText : styles.dateText}>
+                                    {format(date, 'EEE', { locale: frLocale })
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                    format(date, 'EEE', { locale: frLocale }).slice(1)
+                                    }
+                                </Text>
+                                <Text style={isToday(date) ? styles.todayText : styles.dateText}>
+                                    {format(date, 'dd/MM')}
+                                </Text>
+                            </View>
+                        ))}
+                    </ScrollView>
                 </View>
                 <View style={styles.bottomNav}>
                     <Link href="/map" style={styles.tab}>
@@ -118,4 +152,32 @@ const styles = StyleSheet.create({
     tab: {
         padding: 10,
     },
+    calendarContainer: {
+        height: '9%',
+        alignSelf: 'center',
+        marginBottom: 20,
+    },
+    calendar: {
+        flexDirection: 'row',
+    },
+    date: {
+        width: 70,
+        height: 70,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: 'lightgray',
+        borderBottomWidth: 1,
+    },
+    dateText: {
+        fontSize: 15,
+        fontFamily: 'MontserratAlternates-Bold',
+    },
+    todayText: {
+        fontFamily: 'MontserratAlternates-Bold',
+        fontSize: 16,
+        color: 'red',
+    },
+    fontBold: {
+        fontWeight: "bold",
+    }
 });

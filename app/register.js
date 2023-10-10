@@ -89,12 +89,14 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         alignItems: 'center',
+        fontFamily: 'Blinker-Regular',
         justifyContent: 'center',
     },
     title: {
         fontSize: 24,
         marginBottom: 16,
-        color: "#F1C36E"
+        color: "#F1C36E",
+        fontFamily: 'MontserratAlternates-Bold',
     },
     input: {
         width: '80%',
@@ -104,11 +106,13 @@ const styles = StyleSheet.create({
         color: "#1275A7",
         padding : 5,
         height: 40,
+        fontFamily: 'Blinker-Regular',
 
     },
     link: {
         marginTop: 16,
         color: "#1275A7",
+        fontFamily: 'Blinker-Regular',
     },
     button: {
         alignItems: 'center',
@@ -118,8 +122,10 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         backgroundColor: '#1275A7',
+        fontFamily: 'MontserratAlternates-Bold',
     },
     text: {
         color: "#F1C36E",
+        fontFamily: 'Blinker-Regular',
     }
 });
