@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Button, TextInput, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, Button, TextInput, ScrollView, Dimensions} from 'react-native';
 import {Entypo, Ionicons} from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import {Link} from "expo-router";
@@ -9,9 +9,14 @@ import { AntDesign } from '@expo/vector-icons';
 import { eachDayOfInterval, format , isToday} from 'date-fns';
 import frLocale from 'date-fns/locale/fr';
 import {useFonts} from "expo-font";
+import {urlAPI} from "../components/url";
+import axios from "axios";
+import {Image} from "expo-image";
+
 
 export default function App() {
     const [user, setUser] = useState(null);
+    const [hotCompanies, setHotCompanies] = useState([]);
 
     const currentDate = new Date();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -34,6 +39,21 @@ export default function App() {
         fetchUserInfo();
     }, []);
 
+
+
+    useEffect(() => {
+        axios.get(urlAPI + '/api/companies')
+            .then((response) => {
+                const companies = response.data['hydra:member'];
+                const hotCompaniesData = companies.filter((company) => company.IsHot === true);
+
+                setHotCompanies(hotCompaniesData);
+            })
+            .catch((error) => {
+                console.error('Une erreur s\'est produite lors de la récupération des entreprises :', error);
+            });
+    }, []);
+
     return (
         <PaperProvider>
             <View style={styles.container}>
@@ -53,12 +73,12 @@ export default function App() {
                     <View style={styles.rightIcon}>
                         {user ? (
                             <View>
-                                <Link href="/register">
+                                <Link href="/profile">
                                     <FontAwesome name="user-o" size={24} color="black"/>
                                 </Link>
                             </View>
                         ) : (
-                            <Link href="/login">
+                            <Link href="/register">
                                 <AntDesign name="form" size={24} color="black" />
                             </Link>
                         )}
@@ -81,6 +101,39 @@ export default function App() {
                                 <Text style={isToday(date) ? styles.todayText : styles.dateText}>
                                     {format(date, 'dd/MM')}
                                 </Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+                </View>
+                <View style={styles.middleNav}>
+                    <View style={styles.middleNavTab}>
+                        <Link href="/">
+                            <Text style={styles.fontBold}>Agenda</Text>
+                        </Link>
+                    </View>
+                    <View style={styles.middleNavTab}>
+                        <Link href="/">
+                            <Text style={styles.fontBold}>Chaud</Text>
+                        </Link>
+                    </View>
+                    <View style={styles.middleNavTab}>
+                        <Link href="/">
+                            <Text style={styles.fontBold}>Autour de moi</Text>
+                        </Link>
+                    </View>
+                </View>
+                <View style={styles.scrollContainer}>
+                    <ScrollView style={styles.scrollViewContainer}>
+                        {hotCompanies.map((company) => (
+                            <View style={styles.itemContainer} key={company.id}>
+                                <Image
+                                    style={styles.picture}
+                                    source={urlAPI + '/uploads/picture/'+ company.picture}
+                                />
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.fontMontserrat}>{company.name}</Text>
+                                    <Text style={styles.fontMontserrat}>{company.description}</Text>
+                                </View>
                             </View>
                         ))}
                     </ScrollView>
@@ -155,7 +208,7 @@ const styles = StyleSheet.create({
     calendarContainer: {
         height: '9%',
         alignSelf: 'center',
-        marginBottom: 20,
+        marginBottom: 5,
     },
     calendar: {
         flexDirection: 'row',
@@ -178,6 +231,58 @@ const styles = StyleSheet.create({
         color: 'red',
     },
     fontBold: {
+        fontSize: 14,
         fontWeight: "bold",
+        fontFamily: 'Blinker-Regular'
+    },
+    fontMontserrat: {
+        fontFamily: 'MontserratAlternates-Bold',
+    },
+    middleNav: {
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    middleNavTab: {
+        alignItems: "center",
+        justifyContent: "center",
+        borderColor: 'lightgray',
+        borderWidth: 1,
+        borderRadius: 15,
+        width: "30%",
+        height: 45,
+        margin: 5,
+        marginBottom: 15,
+    },
+    itemContainer: {
+        flexDirection: 'row',
+        padding: 5,
+        alignItems: 'center',
+        marginBottom: 3,
+    },
+    textContainer: {
+        flex: 3,
+        alignItems: "center",
+    },
+    picture: {
+        flex: 2,
+        marginRight: 10,
+        justifyContent: "center",
+        borderWidth: 1,
+        borderRadius: 25,
+        borderColor: "lightgray",
+        width: 150,
+        height: 130,
+        alignItems: "center",
+
+    },
+    scrollContainer: {
+        width: '90%',
+        height: Dimensions.get('screen').height * 0.60,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "gray",
+        borderRadius : 25,
+        paddingBottom : 0,
+        paddingTop : 0,
     }
 });
