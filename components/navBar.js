@@ -13,7 +13,7 @@ const BottomNav =  () => {
             <Link href="/" style={styles.tab}>
                 <Entypo name="home" size={24} color="black" />
             </Link>
-            <Link href="/map" style={styles.tab} >
+            <Link href="/category" style={styles.tab} >
                 <AntDesign name="appstore1" size={24} color="black" />
             </Link>
         </View>

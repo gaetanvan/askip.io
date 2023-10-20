@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         alignItems:"center"
     },
     linkContainer: {
-        backgroundColor: "rgba(90, 123, 206, 0.10)",
+        backgroundColor: "rgba(90, 123, 206, 0.20)",
         flexDirection: "row",
         width: "80%",
         alignItems: "center",

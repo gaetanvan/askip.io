@@ -76,7 +76,7 @@ export default function App() {
                 <Pressable style={styles.button} onPress={handleRegistration}>
                     <Text style={styles.text}>S'inscrire</Text>
                 </Pressable>
-                <Link href="/index">
+                <Link href="/login">
                     <Text style={styles.link}>Déjà inscrit ? Connectez-vous</Text>
                 </Link>
             </View>
