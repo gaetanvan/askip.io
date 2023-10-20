@@ -1,2 +1,2 @@
 export const url = 'https://data.opendatasoft.com/api/explore/v2.1/catalog/datasets/osm-restaurant-fr@babel/records?limit=100&refine=commune%3A%22Grenoble%22'
-export const urlAPI = "https://big-wasps-fold.loca.lt"
+export const urlAPI = "http://127.0.0.1:8000"

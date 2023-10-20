@@ -12,6 +12,7 @@ import {useFonts} from "expo-font";
 import {urlAPI} from "../components/url";
 import axios from "axios";
 import {Image} from "expo-image";
+import BottomNav from "../components/navBar"
 
 
 export default function App() {
@@ -138,17 +139,7 @@ export default function App() {
                         ))}
                     </ScrollView>
                 </View>
-                <View style={styles.bottomNav}>
-                    <Link href="/map" style={styles.tab}>
-                        <FontAwesome name="map-marker" size={24} color="black" />
-                    </Link>
-                    <Link href="/" style={styles.tab}>
-                        <Entypo name="home" size={24} color="black" />
-                    </Link>
-                    <Link href="/map" style={styles.tab} >
-                        <AntDesign name="appstore1" size={24} color="black" />
-                    </Link>
-                </View>
+                <BottomNav/>
             </View>
         </PaperProvider>
     );
@@ -188,22 +179,6 @@ const styles = StyleSheet.create({
     rightIcon: {
         flex: 1,
         alignItems: 'flex-end',
-    },
-    bottomNav: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        position: 'absolute',
-        bottom: 0,
-        width: '80%',
-        borderWidth: 1,
-        borderColor: "grey",
-        marginBottom: 10,
-        borderRadius: 15,
-    },
-    tab: {
-        padding: 10,
     },
     calendarContainer: {
         height: '9%',
